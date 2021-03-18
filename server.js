@@ -46,8 +46,9 @@ app.post('/contact/sendmail', (req, res) => {
     transporter.sendMail(mailOptions, function(err, data){
     if(err) {
         console.log('Error Occurs: ' + err);
+        res.status(404).json(err);
     } else {
-        console.log('Email sent');
+        res.status(200).json('yay');
     }
 })
 })
