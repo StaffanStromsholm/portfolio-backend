@@ -45,7 +45,7 @@ app.post('/sendemail', (req, res) => {
         if(err){
             res.send({message:err})
         } else {
-            res.send({message: 'Email has been sent!'})
+            res.send({message: result})
         }
     })
 })
