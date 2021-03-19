@@ -44,7 +44,6 @@ app.post('/sendemail', (req, res) => {
             res.send({message: 'Email has been sent!'})
         }
     })
-
 })
 
 app.listen(PORT, () => console.log(`server running at port ${PORT}`))
