@@ -21,6 +21,10 @@ const mailTransporter = nodemailer.createTransport(sgTransport({
     }
 }))
 
+app.get('/', (req, res) => {
+    res.send({message: 'yeah well this works'})
+})
+
 app.post('/sendemail', (req, res) => {
     const name = req.body.name;
     const company = req.body.company;
