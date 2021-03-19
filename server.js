@@ -11,53 +11,40 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-require('dotenv').config();
+const credits = require('./config');
+const nodemailer = require('nodemailer')
+const sgTransport = require('nodemailer-sendgrid-transport');
 
-const nodemailer = require('nodemailer');
-
-// Step 1
-let transporter = nodemailer.createTransport({
-    service: 'gmail',
+const mailTransporter = nodemailer.createTransport(sgTransport({
     auth: {
-        user: process.env.EMAIL,
-        pass: process.env.PASSWORD
+        api_key: credits.ADMIN_EMAIL_API_KEY
     }
-});
+}))
 
-// Step 2
-
-
-
-app.post('/contact/sendmail', (req, res) => {
-    console.log(req.body);
+app.post('/sendemail', (req, res) => {
     const name = req.body.name;
     const company = req.body.company;
-    const subject = req.body.subject;
+    const email = req.body.email;
     const message = req.body.message;
 
-    let mailOptions = {
-        from: 'staffan.stromsholm@gmail.com',
-        to: 'septembermusic.stromsholm@gmail.com',
-        subject,
-        text: `Name: ${name}, Company: ${company}, message: ${message}`
+    const mailOptions = {
+        from: `"Admin" <${credits.FROM_EMAIL}>`,
+        to: `${credits.TO_EMAIL}`,
+        replyTo: `${credits.TO_EMAIL}`,
+        subject: 'Portoflio Contact Form',
+        html: `<h1>${name}</h1>
+                <h3>${company}</h3>
+                <p>${message}</p>`
     }
 
-    // Step 3
-    transporter.sendMail(mailOptions, function(err, data){
-    if(err) {
-        console.log('Error Occurs: ' + err);
-        res.status(404).json(err);
-    } else {
-        res.status(200).json('yay');
-    }
+    mailTransporter.sendMail(mailOptions, (err, result) => {
+        if(err){
+            res.send({message:err})
+        } else {
+            res.send({message: 'Email has been sent!'})
+        }
+    })
+
 })
-})
 
-
-
-
-
-
-app.listen(PORT, () => {
-    console.log(`listening on port ${PORT}`);
-})
+app.listen(PORT, () => console.log(`server running at port ${PORT}`))
