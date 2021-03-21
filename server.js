@@ -28,14 +28,6 @@ let mailOptions = {
     text: 'it works'
 }
 
-transporter.sendMail(mailOptions, (err, data) => {
-    if (err) {
-        console.log('An error occured: ' + err);
-    } else {
-        console.log('Email sent');
-    }
-})
-
 app.post('/sendemail', (req, res) => {
     transporter.sendMail(mailOptions, (err, data) => {
         if (err) {
