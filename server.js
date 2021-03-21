@@ -2,50 +2,41 @@ const express = require('express');
 const app = express();
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const nodemailer = require('nodemailer')
 
 const PORT = process.env.PORT || 5000;
 const HOST = process.env.HOST || 'localhost';
+const dotenv = require('dotenv');
+dotenv.config();
 
 app.use(cors());
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-const credits = require('./config');
-const nodemailer = require('nodemailer')
-const sgTransport = require('nodemailer-sendgrid-transport');
-
-const mailTransporter = nodemailer.createTransport(sgTransport({
+let transporter = nodemailer.createTransport({
+    service: 'gmail',
     auth: {
-        api_key: credits.ADMIN_EMAIL_API_KEY
+        user: process.env.USER,
+        pass: process.env.PASS
     }
-}))
-
-app.get('/', (req, res) => {
-    res.send({message: 'yeah well this works'})
 })
 
-app.post('/sendemail', (req, res) => {
-    const name = req.body.name;
-    const company = req.body.company;
-    const email = req.body.email;
-    const message = req.body.message;
+let mailOptions = {
+    from: 'septembermusic.stromsholm@gmail.com',
+    to: 'staffan.stromsholm@gmail.com',
+    subject: 'Testing',
+    text: 'it works'
+}
 
-    const mailOptions = {
-        from: `"Admin" <${credits.FROM_EMAIL}>`,
-        to: `${credits.TO_EMAIL}`,
-        replyTo: `${credits.TO_EMAIL}`,
-        subject: 'Portoflio Contact Form',
-        html: `<h1>${name}</h1>
-                <h3>${company}</h3>
-                <p>${message}</p>`
-    }
 
-    mailTransporter.sendMail(mailOptions, (err, result) => {
+
+app.post('/sendemail', (req, res)=>{
+    transporter.sendMail(mailOptions, (err, data) => {
         if(err){
-            res.send({message:err})
+            console.log('An error occured: ' + err);
         } else {
-            res.send({message: result})
+            console.log('Email sent');
         }
     })
 })
