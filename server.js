@@ -15,7 +15,9 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 let transporter = nodemailer.createTransport({
-    service: 'gmail',
+    host: 'smtp.gmail.com',
+    port: 465,
+    secure: true,
     auth: {
         user: process.env.USER,
         pass: process.env.PASS
@@ -29,16 +31,12 @@ let mailOptions = {
     text: 'it works'
 }
 
-
-
-app.post('/sendemail', (req, res)=>{
-    transporter.sendMail(mailOptions, (err, data) => {
-        if(err){
-            console.log('An error occured: ' + err);
-        } else {
-            console.log('Email sent');
-        }
-    })
+transporter.sendMail(mailOptions, (err, data) => {
+    if(err){
+        console.log('An error occured: ' + err);
+    } else {
+        console.log('Email sent');
+    }
 })
 
 app.listen(PORT, () => console.log(`server running at port ${PORT}`))
