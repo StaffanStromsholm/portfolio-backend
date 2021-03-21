@@ -8,6 +8,7 @@
     "mongodb": "^3.6.4",
     "mongoose": "^5.11.18",
     "nodemailer": "^6.5.0",
+    "nodemailer-sendgrid": "^1.0.3",
     "nodemailer-sendgrid-transport": "^0.2.0",
     "smtp": "^0.1.4"
   },

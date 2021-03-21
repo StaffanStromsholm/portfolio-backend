@@ -3,6 +3,7 @@ const app = express();
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const nodemailer = require('nodemailer')
+const nodemailerSendgrid = require('nodemailer-sendgrid');
 
 const PORT = process.env.PORT || 5000;
 const HOST = process.env.HOST || 'localhost';
@@ -14,19 +15,14 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-let transporter = nodemailer.createTransport({
-    host: 'smtp.gmail.com',
-    type: 'SMTP',
-    port: 465,
-    secure: true,
-    auth: {
-        user: process.env.USER,
-        pass: process.env.PASS
-    }
-})
+let transporter = nodemailer.createTransport(
+    nodemailerSendgrid({
+        apiKey: process.env.ADMIN_EMAIL_API_KEY
+    })
+)
 
 let mailOptions = {
-    from: 'septembermusic.stromsholm@gmail.com',
+    from: 'staffan.stromsholm@gmail.com',
     to: 'staffan.stromsholm@gmail.com',
     subject: 'Testing',
     text: 'it works'
