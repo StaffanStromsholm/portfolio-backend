@@ -21,14 +21,23 @@ let transporter = nodemailer.createTransport(
     })
 )
 
-let mailOptions = {
-    from: 'staffan.stromsholm@gmail.com',
-    to: 'staffan.stromsholm@gmail.com',
-    subject: 'Testing',
-    text: 'it works'
-}
-
 app.post('/sendemail', (req, res) => {
+    const name = req.body.name;
+    const email = req.body.email;
+    const company = req.body.company;
+    const message = req.body.message;
+
+    let mailOptions = {
+        from: 'staffan.stromsholm@gmail.com',
+        to: 'staffan.stromsholm@gmail.com',
+        subject: 'Contact',
+        html: `<h1>${name}</h1>
+                <p><strong>email: </strong> ${email}</p>
+                <p><strong>company:</strong> ${company}
+                <p><strong>message:</strong></p> 
+                <p>${message}</p>`
+    }
+
     transporter.sendMail(mailOptions, (err, data) => {
         if (err) {
             console.log('An error occured: ' + err);
